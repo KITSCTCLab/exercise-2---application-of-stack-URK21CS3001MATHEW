@@ -1,116 +1,118 @@
-from typing import Optional
+class Evaluate:
+  """This class validates and evaluate postfix expression.
+  Attributes:
+      top: An integer which denotes the index of the element at the top of the stack currently.
+      size_of_stack: An integer which represents the size of stack.
+      stack: A List which acts as a Stack.
+  """
+    # Write your code here
 
 
-class Node:
+  def __init__(self, size):
+    """Inits Evaluate with top, size_of_stack and stack.
+    Arguments:
+      top:An integer which points to the top most element in the stack.
+      size_of_stack: An integer which represents size of stack.
+      stack: A list which maintians the elements of stack.
     """
-    Provide necessary documentaion
-        data=store associated data
-        next=link to next node
+    self.top = -1
+    self.size_of_stack = size
+    self.stack = []
+
+
+  def isEmpty(self):
     """
-
-    def __init__(self, data=None, next=None):
-        """
-        Initializes the Node with the given attributes
-        """
-        self.data = data
-        self.next = next
-
-
-class LinkedList:
+    Check whether the stack is empty.
+    Returns:
+      True if it is empty, else returns False.
     """
-    This class implements LinkedList using Node objects
-    Methods:
-        insert_at_end-inserts node with data at the end of the list
-        status-displays all elements of the list
-    Attributes:
-        self.head-contains first node of LinkedList and None if list empty
+    # Write your code here
+    if self.top == -1:
+      return True
+    else:
+      return False
+
+
+  def pop(self):
     """
-
-    def __init__(self):
-        """
-        Initialize the head
-        """
-        self.head = None
-
-    def insert_at_end(self, data):
-        """
-        Insert node at end of the list
-        :param data: integer data that will be used to create a node
-        """
-        new = Node(data)
-        current = self.head
-        if current is None:
-            self.head = new
-        else:
-            while current.next is not None:
-                current = current.next
-            current.next = new
-
-    def status(self):
-        """
-        It prints all the elements of list.
-        """
-        elements = []
-        current = self.head
-        while current:
-            elements.append(current.data)
-            current = current.next
-        print(elements)
-
-
-class Solution:
+    Do pop operation if the stack is not empty.
+    Returns:
+      The data which is popped out if the stack is not empty.
     """
-    Provide necessary documentation
-    Class implementing the functions to add numbers in a LinkedList
-    
+    # Write your code here
+    if not self.isEmpty():
+      self.stack.pop()
+
+
+  def push(self, operand):
     """
-
-    def addTwoNumbers(self, first_list: Optional[LinkedList], second_list: Optional[LinkedList]) -> Optional[
-        LinkedList]:
-        """
-        :param first_list: Linkedlist with non-negative integers
-        :param second_list: Linkedlist with non-negative integers
-        :return: returns the sum as a linked list
-        """
-        result = self.get_num(first_list) + self.get_num(second_list)
-        sum_list = LinkedList()
-        for digit in list(map(int, str(result)[::-1])):
-            sum_list.insert_at_end(digit)
-        return sum_list
-
-    def get_num(self, l: Optional[LinkedList]) -> int:
-        """
-        :param l: LinkedList with non-negative integers
-        :return: returns digits of the list as a single integer
-        """
-        curr = l.head
-        if curr is None:
-            return 0
-        num = ""
-        while curr is not None:
-            num = str(curr.data) + num
-            curr = curr.next
-        return int(num)
+    Push the operand to stack if the stack is not full.
+    Arguments:
+      operand: The operand to be pushed.
+    """
+    # Write your code here
+    if self.top != self.size_of_stack - 1:
+      self.stack.append(operand)
 
 
-# Do not edit the following code
-# Create an instance for LinkedList
-first_list = LinkedList()
-# Create an another instance for LinkedListT
-second_list = LinkedList()
-# Read data for first list
-data_for_first_list = list(map(int, input().strip().split(" ")))
-# Add data at the end of first_list
-for data in data_for_first_list:
-    first_list.insert_at_end(data)
-# Read data for second list
-data_for_second_list = list(map(int, input().strip().split(" ")))
-# Add data at the end of second_list
-for data in data_for_second_list:
-    second_list.insert_at_end(data)
-# Create an instance for Solution
-solution = Solution()
-# Pass first_list and second_list to addTwoNumbers, which returns a new linked list
-new_list = solution.addTwoNumbers(first_list, second_list)
-# Display the status of new_list
-new_list.status()
+  def validate_postfix_expression(self, expression):
+    """
+    Check whether the expression is a valid postfix expression.
+    Arguments:
+      expression: A String which represents the expression to be validated.
+    Returns:
+      True if the expression is valid, else returns False.
+    """
+    # Write your code here
+    nums = 0
+    ops = 0
+    for element in expression:
+      if element.isnumeric():
+        nums = nums + 1
+      else:
+        ops = ops + 1
+    if ops == nums - 1:
+      return True
+    else:
+      return False
+
+
+  def evaluate_postfix_expression(self, expression):
+    """
+    Evaluate the postfix expression
+    Arguments:
+      expression: A String which represents the the expression to be evaluated
+    Returns:
+      The result of evaluated postfix expression.
+    """
+    # Write your code here
+    stack = []
+    for i in expression:
+      if i.isnumeric():
+        stack.append(int(i))
+      if len(stack) >= 2:
+        if i == '+':
+          stack[-2] = stack[-2] + stack[-1]
+          stack.pop()
+        elif i == '-':
+          stack[-2] = stack[-2] - stack[-1]
+          stack.pop()
+        elif i == '*':
+          stack[-2] = stack[-2] * stack[-1]
+          stack.pop()
+        elif i == '/':
+          stack[-2] = stack[-2] / stack[-1]
+          stack.pop()
+        elif i == '^':
+          stack[-2] = stack[-2] ^ stack[-1]
+          stack.pop()
+    return int(stack[-1])
+
+# Do not change the following code
+postfix_expression = input()  # Read postfix expression
+tokens = postfix_expression.split()
+evaluate = Evaluate(len(tokens))
+if evaluate.validate_postfix_expression(tokens):
+    print(evaluate.evaluate_postfix_expression(tokens))
+else:
+    print('Invalid postfix expression')
